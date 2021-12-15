@@ -80,6 +80,29 @@ public class DAODetail extends DBConnect.DBConnect {
         return n;
     }
     
+    public ArrayList<BillDetail> getDetailByoID(String order) {
+        ArrayList<BillDetail> arr = new ArrayList<BillDetail>();
+        
+        String sql = "select * from BillDetail where oID = '" + order + "'";
+        
+        ResultSet rs = getData(sql);
+        
+        try {
+            while (rs.next()) {
+                String pid = rs.getString(1);
+                String oID = rs.getString(2);
+                int quantity = rs.getInt(3);
+                double money = rs.getDouble(4);
+                double total = rs.getDouble(5);
+                
+                arr.add(new BillDetail(pid, oID, quantity, money, total));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODetail.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return arr;
+    }
+    
     public ArrayList<BillDetail> getAll() {
         ArrayList<BillDetail> arr = new ArrayList<BillDetail>();
         

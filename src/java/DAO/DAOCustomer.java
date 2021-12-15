@@ -55,7 +55,7 @@ public class DAOCustomer extends DBConnect {
 
             n = pre.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(DAOCategory.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DAOCustomer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return n;
@@ -79,7 +79,7 @@ public class DAOCustomer extends DBConnect {
                 n = pre.executeUpdate();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DAOCustomer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return n;
     }
@@ -100,7 +100,7 @@ public class DAOCustomer extends DBConnect {
                 System.out.println("Changed status successfully!");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DAOCustomer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -121,29 +121,52 @@ public class DAOCustomer extends DBConnect {
                 System.out.println("Updated password successfully!");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DAOCustomer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    public int searchUsername(String username) {
+        int n = 0;
+
+        String sql = "select username from Customer where username='" + username + "'";
+
+        ResultSet rs = getData(sql);
+
+        try {
+            while (rs.next()) {
+                n = n + 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return n;
+    }
+
     public Customer userlogin(String username, String password) {
-        String sql = "select cid from Customer where username='" + username + "' and password='" + password + "'";
+        Customer customer = new Customer();
+        String sql = "select * from Customer where username='" + username + "' and password='" + password + "'";
         ResultSet rs = getData(sql);
         try {
             if (rs.next()) {
-                Customer customer = new Customer();
-                
-                while (rs.next()) {
-                    customer.setCid(rs.getInt(1));
-                    customer.setCname(rs.getString(2));
-                    customer.setCphone(rs.getString(3));
-                    customer.setcAddress(rs.getString(4));
-                    customer.setUsername(rs.getString(5));
-                }
-                
+                customer = new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
                 return customer;
             }
         } catch (SQLException ex) {
             Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public Customer getCustomerInfo(int cid) {
+        ResultSet rs = getData("select * from Customer where cid = " + cid);
+        try {
+            if (rs.next()) {
+                Customer customer = new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+                return customer;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOCustomer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

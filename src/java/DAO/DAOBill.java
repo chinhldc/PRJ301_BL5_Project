@@ -142,10 +142,63 @@ public class DAOBill extends DBConnect.DBConnect {
         }
     }
 
+    public Bill getBill(String order) {
+        String sql = "select * from Bill where oID='" + order + "'";
+        
+        ResultSet rs = getData(sql);
+        
+        try {
+            if (rs.next()) {
+                String oID = rs.getString(1);
+                Date dateCreate = rs.getDate(2);
+                String cname = rs.getString(3);
+                String cphone = rs.getString(4);
+                String cAddress = rs.getString(5);
+                Double total = rs.getDouble(6);
+                int status = rs.getInt(7);
+                int cid = rs.getInt(8);
+                Bill bill = new Bill(oID, dateCreate, cname, cphone, cAddress, total, status, cid);
+                
+                return bill;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOBill.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     public ArrayList<Bill> getAll() {
         ArrayList<Bill> arr = new ArrayList<Bill>();
 
-        String sql = "select * from Bill";
+        String sql = "select * from Bill  order by dateCreate desc";
+
+        ResultSet rs = getData(sql);
+
+        try {
+            while (rs.next()) {
+                String oID = rs.getString(1);
+                Date dateCreate = rs.getDate(2);
+                String cname = rs.getString(3);
+                String cphone = rs.getString(4);
+                String cAddress = rs.getString(5);
+                Double total = rs.getDouble(6);
+                int status = rs.getInt(7);
+                int cid = rs.getInt(8);
+
+                Bill bill = new Bill(oID, dateCreate, cname, cphone, cAddress, total, status, cid);
+
+                arr.add(bill);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOBill.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return arr;
+    }
+    
+    public ArrayList<Bill> billsByCID(int cID) {
+        ArrayList<Bill> arr = new ArrayList<Bill>();
+
+        String sql = "select * from Bill where cid= " + cID;
 
         ResultSet rs = getData(sql);
 

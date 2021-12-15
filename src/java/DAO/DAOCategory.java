@@ -71,6 +71,54 @@ public class DAOCategory extends DBConnect {
         return n;
     }
 
+    public String getCateName(String pid) {
+        String sql = "select Category.cateName from Category INNER JOIN Product ON Product.cateID = Category.cateID where Product.pid = '" + pid + "'";
+
+        ResultSet rs = getData(sql);
+
+        try {
+            while (rs.next()) {
+                String cateName = rs.getString(1);
+                return cateName;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOCategory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public String getCateName(int cateID) {
+        String sql = "select Category.cateName from Category where cateID = " + cateID;
+
+        ResultSet rs = getData(sql);
+
+        try {
+            while (rs.next()) {
+                String cateName = rs.getString(1);
+                return cateName;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOCategory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public Category getCate(int cateID) {
+        String sql = "select * from Category where cateID = " + cateID;
+        
+        ResultSet rs = getData(sql);
+
+        try {
+            if (rs.next()) {
+                Category cate = new Category(rs.getInt(1), rs.getString(2), rs.getInt(3));
+                return cate;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOCategory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     public void changePassword(int id, String password) {
         int n = 0;
         String sql = "update Category set password=? where cateID=?";
@@ -90,7 +138,7 @@ public class DAOCategory extends DBConnect {
             Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void changeStatus(int id, int status) {
         int n = 0;
         String sql = "update Category set status=? where cateID=?";

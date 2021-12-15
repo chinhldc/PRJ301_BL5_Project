@@ -50,6 +50,34 @@ public class DAOAdmin extends DBConnect {
         return n;
     }
     
+    public Admin getAdmin(int adminId) {
+        String sql = "select * from admin where adminId=" + adminId;
+        ResultSet rs = getData(sql);
+        try {
+            if (rs.next()) {
+                Admin admin = new Admin(rs.getInt(1), rs.getString(2), "");
+                return admin;
+            }
+        } catch (SQLException ex) { 
+            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public Admin getAdmin(String username, String password) {
+        String sql = "select * from admin where username='" + username + "' and password='" + password + "'";
+        ResultSet rs = getData(sql);
+        try {
+            if (rs.next()) {
+                Admin admin = new Admin(rs.getInt(1), rs.getString(2), "");
+                return admin;
+            }
+        } catch (SQLException ex) { 
+            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     public void changePassword(int adminID, String oldPW, String newPW) {
         int n = 0;
         String sql = "update admin set password=? where adminID=? and password=?";
@@ -114,7 +142,7 @@ public class DAOAdmin extends DBConnect {
     
     public boolean login(String userName, String password) {
         boolean flag = false;
-        String sql = "select * from admin where username=? and password=? and status=1";
+        String sql = "select * from admin where username=? and password=?";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             
