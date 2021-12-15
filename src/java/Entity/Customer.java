@@ -18,6 +18,11 @@ public class Customer {
         
     }
 
+    public Customer(int cid, String cname) {
+        this.cid = cid;
+        this.cname = cname;
+    }
+    
     public Customer(int cid, String cname, String cphone, String cAddress, 
             String username, String password, int status) {
         this.cid = cid;
@@ -26,6 +31,15 @@ public class Customer {
         this.cAddress = cAddress;
         this.username = username;
         this.password = password;
+        this.status = status;
+    }
+
+    public Customer(int cid, String cname, String cphone, String cAddress, String username, int status) {
+        this.cid = cid;
+        this.cname = cname;
+        this.cphone = cphone;
+        this.cAddress = cAddress;
+        this.username = username;
         this.status = status;
     }
 

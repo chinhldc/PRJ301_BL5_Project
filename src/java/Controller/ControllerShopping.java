@@ -48,21 +48,11 @@ public class ControllerShopping extends HttpServlet {
     private final DAOCustomer daoCust = new DAOCustomer();
     private final DAOBill daoBill = new DAOBill();
     private final DAODetail daoDetail = new DAODetail();
-
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-//            out.println("<!DOCTYPE html>");
-//            out.println("<html>");
-//            out.println("<head>");
-//            out.println("<title>Servlet ControllerShopping</title>");            
-//            out.println("</head>");
-//            out.println("<body>");
-//            out.println("<h1>Servlet ControllerShopping at " + request.getContextPath() + "</h1>");
-//            out.println("</body>");
-//            out.println("</html>");
             HttpSession session = request.getSession();
 //            Create cart
             ArrayList<Product> cart = (ArrayList) session.getAttribute("cart");
@@ -99,22 +89,25 @@ public class ControllerShopping extends HttpServlet {
 
 //            Customer info
             Customer customer = (Customer) session.getAttribute("customer");
-
+            
             String searchMessage = "";
             session.setAttribute("searchMessage", searchMessage);
-
+            
             String userPath = request.getServletPath();
-
+            
             if (userPath.equals("")) {
                 showCate = 1;
                 session.setAttribute("showCate", showCate);
-
+                
                 ArrayList<Product> shop_list = daoProd.getShopList();
                 session.setAttribute("shop_list", shop_list);
-
+                
                 request.getRequestDispatcher("index.jsp").forward(request, response);
             }
 
+            /*
+            * Search for product by name and category
+             */
             if (userPath.equals("/search")) {
                 String submit = request.getParameter("submit");
                 if (submit == null) {
@@ -128,7 +121,7 @@ public class ControllerShopping extends HttpServlet {
                         searchCateID = 0;
                     }
                     String searchProdID = "";
-
+                    
                     if (request.getParameter("searchProdID") != null) {
                         searchProdID = request.getParameter("searchProdID");
                     }
@@ -145,39 +138,48 @@ public class ControllerShopping extends HttpServlet {
                 }
             }
 
+            /*
+            * Get list of product by category
+             */
             if (userPath.equals("/category")) {
                 showCate = 1;
                 session.setAttribute("showCate", showCate);
-
+                
                 int searchCateID = Integer.parseInt(request.getParameter("cateID"));
                 ArrayList<Product> shop_list = daoProd.searchShopList(searchCateID, "");
                 session.setAttribute("shop_list", shop_list);
-
+                
                 String cateName = "All";
                 if (daoCate.getCateName(searchCateID) != null) {
                     cateName = daoCate.getCateName(searchCateID);
                 }
                 searchMessage = "Found " + shop_list.size() + " item(s) for category " + cateName;
                 session.setAttribute("searchMessage", searchMessage);
-
+                
                 request.getRequestDispatcher("index.jsp").forward(request, response);
             }
 
+            /*
+            * Show product info
+             */
             if (userPath.equals("/product")) {
                 String pid = request.getParameter("pid");
                 Product prod = daoProd.getProduct(pid);
                 session.setAttribute("prod", prod);
-
+                
                 String cateName = daoCate.getCateName(pid);
                 session.setAttribute("cateName", cateName);
-
+                
                 request.getRequestDispatcher("product.jsp").forward(request, response);
             }
 
+            /*
+            * Show current Cart
+             */
             if (userPath.equals("/cart")) {
                 String update = (String) request.getParameter("update");
                 String delete = (String) request.getParameter("delete");
-
+                
                 if (update == null && delete == null) {
                     if (customer == null) {
                         response.sendRedirect("login");
@@ -207,9 +209,12 @@ public class ControllerShopping extends HttpServlet {
                     }
                     response.sendRedirect("cart");
                 }
-
+                
             }
 
+            /*
+            * Add product to cart
+             */
             if (userPath.equals("/addtocart")) {
                 if (customer == null) {
                     response.sendRedirect("login");
@@ -232,8 +237,10 @@ public class ControllerShopping extends HttpServlet {
                 }
             }
 
+            /*
+            * Checkout
+             */
             if (userPath.equals("/checkout")) {
-
                 if (customer == null) {
                     response.sendRedirect("login");
                 } else {
@@ -245,17 +252,13 @@ public class ControllerShopping extends HttpServlet {
                         String name = request.getParameter("name");
                         String phone = request.getParameter("phone");
                         String address = request.getParameter("address");
-
+                        
                         double billTotal = 0;
-
 //                        Create oID
                         String oID = customer.getUsername() + System.currentTimeMillis();
-
                         Enumeration<Product> enm = Collections.enumeration(cart);
-
                         Bill newBill = new Bill(oID, name, phone, address, billTotal, -1, customer.getCid());
                         daoBill.addBill(newBill);
-
                         while (enm.hasMoreElements()) {
                             Product item = enm.nextElement();
                             total = item.getPrice() * item.getQuantity();
@@ -264,16 +267,16 @@ public class ControllerShopping extends HttpServlet {
                             daoDetail.insertDetail(bd);
                             daoProd.updateQuantity(item.getPid(), -item.getQuantity());
                         }
-//                        bill.updateTotal(oID, billTotal);
                         daoBill.updateTotal(oID);
-
-//                        session.invalidate();
                         cart.clear();
                         response.sendRedirect(".");
                     }
                 }
             }
 
+            /*
+            * Show bills
+             */
             if (userPath.equals("/bills")) {
                 if (customer == null) {
                     response.sendRedirect("login");
@@ -284,80 +287,97 @@ public class ControllerShopping extends HttpServlet {
                 }
             }
 
+            /*
+            * User login
+             */
             if (userPath.equals("/login")) {
-                String submit = request.getParameter("submit");
-
-                if (submit == null || submit.equals("")) {
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
-                } else {
-                    String username = request.getParameter("username");
-                    String password = request.getParameter("password");
-
-                    String message = "";
-
-                    if (username.equals("") || password.equals("")) {
-                        message = "Username/Password is empty";
+                if (customer == null) {
+                    String submit = request.getParameter("submit");
+                    
+                    if (submit == null || submit.equals("")) {
+                        request.getRequestDispatcher("login.jsp").forward(request, response);
                     } else {
-                        customer = daoCust.userlogin(username, password);
-                        if (customer == null) {
-                            message = "Wrong username/password";
+                        String username = request.getParameter("username");
+                        String password = request.getParameter("password");
+                        
+                        String message = "";
+                        
+                        if (username.equals("") || password.equals("")) {
+                            message = "Username/Password is empty";
+                        } else {
+                            customer = daoCust.userlogin(username, password);
+                            if (customer == null) {
+                                message = "Wrong username/password";
+                            }
+                        }
+                        if (message.equals("")) {
+                            session.setAttribute("customer", customer);
+                            session.setAttribute("privilege", 0);
+                            response.sendRedirect(".");
+                        } else {
+                            request.setAttribute("message", message);
+                            request.getRequestDispatcher("/login.jsp").forward(request, response);
                         }
                     }
-                    if (message.equals("")) {
-                        session.setAttribute("customer", customer);
-                        session.setAttribute("privilege", 0);
-                        response.sendRedirect(".");
-                    } else {
-                        request.setAttribute("message", message);
-                        request.getRequestDispatcher("/login.jsp").forward(request, response);
-                    }
-                }
-            }
-
-            if (userPath.equals("/signup")) {
-                String submit = request.getParameter("submit");
-                String message = "";
-                if (submit == null || submit.equals("")) {
-                    request.setAttribute("message", message);
-                    request.setAttribute("message", "");
-                    request.setAttribute("name", "");
-                    request.setAttribute("phone", "");
-                    request.setAttribute("address", "");
-                    request.setAttribute("username", "");
-                    request.getRequestDispatcher("signup.jsp").forward(request, response);
                 } else {
-                    String name = request.getParameter("name");
-                    String phone = request.getParameter("phone");
-                    String address = request.getParameter("address");
-                    String username = request.getParameter("username");
-                    String password = request.getParameter("password");
-                    String confirmation = request.getParameter("confirmation");
-
-                    if (!password.equals(confirmation)) {
-                        message += "Password does not match confirmation.<br>";
-                    }
-                    if (daoCust.searchUsername(username) > 0) {
-                        message += "Username is already used.<br>";
-                    }
-                    if (password.length() < 8) {
-                        message += "Password must contain at least 8 digits.<br>";
-                    }
-                    if (message.equals("")) {
-                        daoCust.addCustomer(new Customer(name, phone, address, username, password));
-                        session.setAttribute("customer", daoCust.userlogin(username, password));
-                        response.sendRedirect(".");
-                    } else {
-                        request.setAttribute("message", message);
-                        request.setAttribute("name", name);
-                        request.setAttribute("phone", phone);
-                        request.setAttribute("address", address);
-                        request.setAttribute("username", username);
-                        request.getRequestDispatcher("signup.jsp").forward(request, response);
-                    }
+                    response.sendRedirect("");
                 }
-
             }
 
+            /*
+            * User signup
+             */
+            if (userPath.equals("/signup")) {
+                if (customer == null) {
+                    String submit = request.getParameter("submit");
+                    String message = "";
+                    if (submit == null || submit.equals("")) {
+                        request.setAttribute("message", message);
+                        request.setAttribute("message", "");
+                        request.setAttribute("name", "");
+                        request.setAttribute("phone", "");
+                        request.setAttribute("address", "");
+                        request.setAttribute("username", "");
+                        request.getRequestDispatcher("signup.jsp").forward(request, response);
+                    } else {
+                        String name = request.getParameter("name");
+                        String phone = request.getParameter("phone");
+                        String address = request.getParameter("address");
+                        String username = request.getParameter("username");
+                        String password = request.getParameter("password");
+                        String confirmation = request.getParameter("confirmation");
+                        
+                        if (!password.equals(confirmation)) {
+                            message += "Password does not match confirmation.<br>";
+                        }
+                        if (daoCust.searchUsername(username) > 0) {
+                            message += "Username is already used.<br>";
+                        }
+                        if (password.length() < 8) {
+                            message += "Password must contain at least 8 digits.<br>";
+                        }
+                        if (message.equals("")) {
+                            daoCust.addCustomer(new Customer(name, phone, address, username, password));
+                            session.setAttribute("customer", daoCust.userlogin(username, password));
+                            response.sendRedirect(".");
+                        } else {
+                            request.setAttribute("message", message);
+                            request.setAttribute("name", name);
+                            request.setAttribute("phone", phone);
+                            request.setAttribute("address", address);
+                            request.setAttribute("username", username);
+                            request.getRequestDispatcher("signup.jsp").forward(request, response);
+                        }
+                    }
+                } else {
+                    response.sendRedirect("");
+                }
+                
+            }
+
+            /*
+            * User logout
+             */
             if (userPath.equals("/logout")) {
                 String submit = request.getParameter("submit");
                 if (customer == null) {
@@ -372,7 +392,7 @@ public class ControllerShopping extends HttpServlet {
             }
         }
     }
-
+    
     private int getIndex(String id, ArrayList<Product> cart) {
         for (int i = 0; i < cart.size(); i++) {
             if (cart.get(i).getPid().equalsIgnoreCase(id)) {

@@ -189,13 +189,11 @@ public class ControllerAdmin extends HttpServlet {
 
                     if (service.equalsIgnoreCase("listAll")) {
                         ArrayList<Category> cate_list = daoCate.getAll();
-
+                        
                         session.setAttribute("cate_list", cate_list);
 
-                        ResultSet rs = daoCate.getData("select * from Category");
                         String title = "List all Category for Admin";
 
-                        request.setAttribute("rs", rs);
                         session.setAttribute("title", title);
 
                         request.getRequestDispatcher("/admin/CategoryView.jsp").forward(request, response);
@@ -265,7 +263,6 @@ public class ControllerAdmin extends HttpServlet {
 
                     if (service.equals("listAll") || service.equals("search")) {
 //                Step 1
-//                String sql = "select * from Product";
                         ResultSet rs = null;
                         String sql = "";
                         if (service.equalsIgnoreCase("listAll")) {
@@ -394,16 +391,15 @@ public class ControllerAdmin extends HttpServlet {
 
                         if (submit == null) {
                             String title = "";
-
-                            ResultSet rs = null;
-
-                            String id = request.getParameter("cid");
-
-                            rs = daoCustomer.getData("select * from Customer where cid='" + id + "'");
-
+                            Customer customer = new Customer();
+                            try {
+                                int id = Integer.parseInt(request.getParameter("cid"));
+                                customer = daoCustomer.getCustomerInfo(id);
+                            } catch (NumberFormatException ex) {
+                                title = "Invalid customer id";
+                            }
                             request.setAttribute("title", title);
-                            request.setAttribute("rs", rs);
-
+                            request.setAttribute("customer", customer);
                             request.getRequestDispatcher("/admin/CustomerEdit.jsp").forward(request, response);
                         } else {
                             String cname = request.getParameter("cname");
@@ -411,6 +407,8 @@ public class ControllerAdmin extends HttpServlet {
                             String cAddress = request.getParameter("cAddress");
                             String username = request.getParameter("username");
                             String password = request.getParameter("password");
+                            int cid = Integer.parseInt(request.getParameter("cid"));
+                            int status = Integer.parseInt(request.getParameter("status"));
 
                             if (service.equalsIgnoreCase("insert")) {
                                 Customer cus = new Customer(cname, cphone, cAddress, username, password);
@@ -418,7 +416,9 @@ public class ControllerAdmin extends HttpServlet {
                                 response.sendRedirect("MngCust");
                             }
                             if (service.equalsIgnoreCase("update")) {
-
+                                Customer customer = new Customer(cid, cname, cphone, cAddress, username, "", status);
+                                daoCustomer.updateCustomer(customer);
+                                response.sendRedirect("MngCust");
                             }
                         }
 
@@ -428,13 +428,18 @@ public class ControllerAdmin extends HttpServlet {
                         String submit = request.getParameter("submit");
 
                         if (submit == null) {
-                            String cid = request.getParameter("cid");
+                            int cid = 0;
+                            String title = "";
+                            Customer customer = new Customer();
+                            try {
+                                cid = Integer.parseInt(request.getParameter("cid"));
+                                customer = daoCustomer.changePswdInfo(cid);
+                            } catch (NumberFormatException ex) {
+                                title = "Invalid customer id";
+                            }
+                            title = "Change password";
 
-                            ResultSet rs = daoCustomer.getData("select cid, username from Customer where cid=" + cid);
-
-                            String title = "Change password";
-
-                            request.setAttribute("rs", rs);
+                            request.setAttribute("customer", customer);
                             request.setAttribute("title", title);
 
                             request.getRequestDispatcher("/admin/CustomerEdit.jsp").forward(request, response);

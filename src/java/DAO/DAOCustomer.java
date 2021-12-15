@@ -41,7 +41,7 @@ public class DAOCustomer extends DBConnect {
 
     public int updateCustomer(Customer customer) {
         int n = 0;
-        String sql = "update Customer set cname=?, cphone=?, cAddress=?, username=?, password=?, status=?"
+        String sql = "update Customer set cname=?, cphone=?, cAddress=?, username=?, status=?"
                 + " where cid=?";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
@@ -49,9 +49,8 @@ public class DAOCustomer extends DBConnect {
             pre.setString(2, customer.getCphone());
             pre.setString(3, customer.getcAddress());
             pre.setString(4, customer.getUsername());
-            pre.setString(5, customer.getPassword());
-            pre.setInt(6, customer.getStatus());
-            pre.setInt(7, customer.getCid());
+            pre.setInt(5, customer.getStatus());
+            pre.setInt(6, customer.getCid());
 
             n = pre.executeUpdate();
         } catch (SQLException ex) {
@@ -162,7 +161,20 @@ public class DAOCustomer extends DBConnect {
         ResultSet rs = getData("select * from Customer where cid = " + cid);
         try {
             if (rs.next()) {
-                Customer customer = new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+                Customer customer = new Customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(7));
+                return customer;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOCustomer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public Customer changePswdInfo(int cid) {
+        ResultSet rs = getData("select cid, cname from Customer where cid = " + cid);
+        try {
+            if (rs.next()) {
+                Customer customer = new Customer(rs.getInt(1), rs.getString(2));
                 return customer;
             }
         } catch (SQLException ex) {

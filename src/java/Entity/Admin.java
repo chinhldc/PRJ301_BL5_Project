@@ -11,7 +11,8 @@ package Entity;
  */
 public class Admin {
     private int adminID;
-    private String username, password;
+    private String username;
+    private String password;
 
     public Admin(int adminID, String username, String password) {
         this.adminID = adminID;
