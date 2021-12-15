@@ -70,7 +70,7 @@
                                             <% if (privilege != 1) { %>
                                             <form action="addtocart?pid=<%=prod.getPid() %>" method="POST">
                                             <li class="last">Buy<span>
-                                                    <input type="number" name="quantity" value="1" max="<%=prod.getQuantity()%>" style="width:5em; text-align: center"/>
+                                                    <input type="number" name="quantity" value="1" max="<%=prod.getQuantity()%>" min="1" style="width:5em; text-align: center"/>
                                                 </span></li></ul>
                                                 <div class="button5">
                                             <input type="submit" name="submit" class="btn" value="Add to cart"/>

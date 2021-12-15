@@ -5,19 +5,14 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="java.sql.ResultSet"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <%@include file="../nav/header.jsp" %>
 
     <body class="js">
         <%@include file="../nav/nav.jsp" %>
-        
-        <%
-        ArrayList<Category> cate_list = (ArrayList<Category>) session.getAttribute("cate_list");
-        Enumeration<Category> cate_items = Collections.enumeration(cate_list);
-        %>
-        
+
         <div class="shopping-cart section">
             <div class="container">
                 <div class="row">
@@ -53,18 +48,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% while (cate_items.hasMoreElements()) {
-                                            Category category = cate_items.nextElement();
-                                    %>
-                                    <tr class="text-center">
-                                        <td><%=category.getCateID()%></td>
-                                        <td><%=category.getCateName()%></td>
-                                        <td><%=(category.getStatus() == 1 ? "Enable" : "Disable" )%></td>
-                                        <td><a href="MngCate?service=update&id=<%=category.getCateID()%>">Update</a></td>
-                                        <td><a href="MngCate?service=delete&id=<%=category.getCateID()%>">Delete</a></td>
-                                    </tr>
-                                    <%}
-                                    %>
+                                    <c:forEach items="${sessionScope.cate_list}" var="cate">
+                                        <tr class="text-center">
+                                            <td>${cate.cateID}</td>
+                                            <td>${cate.cateName}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${cate.status == 1}">
+                                                        Enable
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        Disable
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td><a href="MngCate?service=update&id=${cate.cateID}">Update</a></td>
+                                            <td><a href="MngCate?service=delete&id=${cate.cateID}">Delete</a></td>
+                                        </tr>
+                                    </c:forEach>
                                 </tbody>
                             </table>
                         </div>
@@ -72,9 +73,7 @@
                 </div>
             </div>
         </div>
-        
 
-        
-            <%@include file="../nav/footer.jsp" %>
+        <%@include file="../nav/footer.jsp" %>
     </body>
 </html>

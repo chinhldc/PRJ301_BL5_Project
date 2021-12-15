@@ -6,12 +6,12 @@
 
 <%@page import="Entity.Bill"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
     <%@include file="nav/header.jsp" %>
     <body class="js">
         <%@include file="nav/nav.jsp" %>
-
         <!-- Breadcrumbs -->
         <div class="breadcrumbs">
             <div class="container">
@@ -28,11 +28,6 @@
             </div>
         </div>
         <!-- End Breadcrumbs -->
-
-        <%
-            ArrayList<Bill> bills = (ArrayList) session.getAttribute("bills");
-        %>
-
         <!-- Bills List -->
         <div class="shopping-cart section">
             <div class="container">
@@ -52,21 +47,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <%
-                                    Enumeration orders = Collections.enumeration(bills);
-                                    while (orders.hasMoreElements()) {
-                                        Bill order = (Bill) orders.nextElement();
-                                %>
+                                <c:forEach items="${sessionScope.bills}" var="current">
                                 <tr>
-                                    <td class="image" ><%=order.getoID()%></td>
-                                    <td class="image" ><%=order.getDateCreate()%></td>
-                                    <td class="image" ><%=order.getCname()%></td>
-                                    <td class="image" ><%=order.getCphone()%></td>
-                                    <td class="image" ><%=order.getcAddress()%></td>
-                                    <td class="image" >$<%=order.getTotal()%></td>
-                                    <td class="image" ><%=(order.getStatus() == 0 ? "Confirmed" : "Delivered")%></td>
+                                    <td class="image" >${current.oID}</td>
+                                    <td class="image" >${current.dateCreate}</td>
+                                    <td class="image" >${current.cname}</td>
+                                    <td class="image" >${current.cphone}</td>
+                                    <td class="image" >${current.cAddress}</td>
+                                    <td class="image" >$${current.total}</td>
+                                    <td class="image" >
+                                        <c:choose>
+                                            <c:when test="${current.status == 0}">
+                                                Processing
+                                            </c:when>
+                                            <c:when test="${current.status == 1}">
+                                                Delivered
+                                            </c:when>
+                                        </c:choose>
+                                    </td>
                                 </tr>
-                                <%}%>
+                                </c:forEach>
                             </tbody>
                         </table>
                         <!--/ End Cart -->

@@ -4,25 +4,14 @@
     Author     : chinh
 --%>
 
-<%@page import="java.util.Enumeration"%>
-<%@page import="Entity.Admin"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Collections"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="java.sql.ResultSet"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
     <%@include file="../nav/header.jsp" %>
 
     <body class="js">
         <%@include file="../nav/nav.jsp" %>
-
-        <%
-            ArrayList<Admin> admin_list = (ArrayList) session.getAttribute("admin_list");
-
-            Enumeration<Admin> admlist = Collections.enumeration(admin_list);
-        %>
-
         <div class="shopping-cart section">
             <div class="container">
                 <div class="row">
@@ -58,17 +47,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% while (admlist.hasMoreElements()) {
-                                            Admin admin = admlist.nextElement();
-                                    %>
-                                    <tr class="text-center">
-                                        <td><%=admin.getAdminID()%></td>
-                                        <td><%=admin.getUsername()%></td>
-                                        <td><%=admin.getPassword()%></td>
-                                        <td><a href="admin?service=changePswd&adminID=<%=admin.getAdminID()%>">Change password</a></td>
+                                    <c:forEach items="${sessionScope.admin_list}" var="current">
+                                        <tr class="text-center">
+                                        <td>${current.adminID}</td>
+                                        <td>${current.username}</td>
+                                        <td>${current.password}</td>
+                                        <td><a href="admin?service=changePswd&adminID=${current.adminID}">Change password</a></td>
                                     </tr>
-                                    <%}
-                                    %>
+                                    </c:forEach>
                                 </tbody>
                             </table>
                         </div>
