@@ -322,7 +322,7 @@ public class ControllerAdmin extends HttpServlet {
 
                             request.getRequestDispatcher("/admin/ProductEdit.jsp").forward(request, response);
                         } else {
-                            String id = request.getParameter("id");
+                            String id = request.getParameter("pid");
                             String name = request.getParameter("pname");
                             String quantity = request.getParameter("quantity");
                             String price = request.getParameter("price");
@@ -330,6 +330,7 @@ public class ControllerAdmin extends HttpServlet {
                             String des = request.getParameter("des");
                             String status = request.getParameter("status");
                             String cate = request.getParameter("cate");
+                            String location = request.getParameter("location");
 
                             if (id == null || id.equals("")) {
                                 out.print("Input ID");
@@ -343,11 +344,11 @@ public class ControllerAdmin extends HttpServlet {
                                 int cateID = Integer.parseInt(cate);
 
                                 if (service.equals("insert")) {
-                                    Product pro = new Product(id, name, quan, pri, image, des, 1, cateID);
+                                    Product pro = new Product(id, name, quan, pri, image, des, 1, cateID, location);
                                     daoProduct.addProduct(pro);
                                 }
                                 if (service.equals("update")) {
-                                    Product pro = new Product(id, name, quan, pri, image, des, sta, cateID);
+                                    Product pro = new Product(id, name, quan, pri, image, des, sta, cateID, location);
                                     daoProduct.updateProduct(pro);
                                 }
                                 response.sendRedirect("MngProd");

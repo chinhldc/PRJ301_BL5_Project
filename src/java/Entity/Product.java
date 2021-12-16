@@ -15,11 +15,24 @@ public class Product {
     private double price;
     private String image, description;
     private int status, cateID;
+    private String location;
     
     public Product() {
         
     }
 
+    public Product(String pid, String pname, int quantity, double price, String image, String description, int status, int cateID, String location) {
+        this.pid = pid;
+        this.pname = pname;
+        this.quantity = quantity;
+        this.price = price;
+        this.image = image;
+        this.description = description;
+        this.status = status;
+        this.cateID = cateID;
+        this.location = location;
+    }
+    
     public Product(String pid, String pname, int quantity, double price, String image, String description, int status, int cateID) {
         this.pid = pid;
         this.pname = pname;
@@ -110,6 +123,14 @@ public class Product {
 
     public void setCateID(int cateID) {
         this.cateID = cateID;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
     
 }

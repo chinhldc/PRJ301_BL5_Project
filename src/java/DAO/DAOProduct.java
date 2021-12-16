@@ -37,8 +37,8 @@ public class DAOProduct extends DBConnect {
 
     public int addProduct(Product pro) {
         int n = 0;
-        String sql = "insert into Product(pid, pname, quantity, price, image, description, status, cateID) "
-                + "values (?,?,?,?,?,?,?,?)";
+        String sql = "insert into Product(pid, pname, quantity, price, image, description, status, cateID, location) "
+                + "values (?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, pro.getPid());
@@ -49,6 +49,7 @@ public class DAOProduct extends DBConnect {
             pre.setString(6, pro.getDescription());
             pre.setInt(7, pro.getStatus());
             pre.setInt(8, pro.getCateID());
+            pre.setString(9, pro.getLocation());
             n = pre.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
@@ -73,8 +74,9 @@ public class DAOProduct extends DBConnect {
                 String description = rs.getString(6);
                 int status = rs.getInt(7);
                 int cateID = rs.getInt(8);
+                String location = rs.getString(9);
 
-                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID);
+                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID, location);
 
                 arr.add(pro);
             }
@@ -123,8 +125,9 @@ public class DAOProduct extends DBConnect {
                 String description = rs.getString(6);
                 int status = rs.getInt(7);
                 int cateID = rs.getInt(8);
+                String location = rs.getString(9);
 
-                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID);
+                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID, location);
                 System.out.println(pro);
 
                 arr.add(pro);
@@ -153,8 +156,9 @@ public class DAOProduct extends DBConnect {
                 String description = rs.getString(6);
                 int status = rs.getInt(7);
                 int cateID = rs.getInt(8);
+                String location = rs.getString(9);
 
-                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID);
+                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID, location);
                 System.out.println(pro);
 
                 arr.add(pro);
@@ -186,7 +190,7 @@ public class DAOProduct extends DBConnect {
         int n = 0;
 
         String sql = "update Product set pname=?, quantity=?, price=?, image=?, description=?, "
-                + "status=?, cateID=? where pid=?";
+                + "status=?, cateID=?, location=? where pid=?";
         //code here
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
@@ -197,7 +201,9 @@ public class DAOProduct extends DBConnect {
             pre.setString(5, pro.getDescription());
             pre.setInt(6, pro.getStatus());
             pre.setInt(7, pro.getCateID());
-            pre.setString(8, pro.getPid());
+            pre.setString(8, pro.getLocation());
+            pre.setString(9, pro.getPid());
+            
             n = pre.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
@@ -275,6 +281,7 @@ public class DAOProduct extends DBConnect {
                 prod.setDescription(rs.getString(6));
                 prod.setStatus(rs.getInt(7));
                 prod.setCateID(rs.getInt(8));
+                prod.setLocation(rs.getString(9));
                 return prod;
             }
         } catch (SQLException ex) {
@@ -298,8 +305,9 @@ public class DAOProduct extends DBConnect {
                 String description = rs.getString(6);
                 int status = rs.getInt(7);
                 int cateID = rs.getInt(8);
+                String location = rs.getString(9);
 
-                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID);
+                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID, location);
                 System.out.println(pro);
             }
         } catch (SQLException ex) {
@@ -353,8 +361,9 @@ public class DAOProduct extends DBConnect {
                 String description = rs.getString(6);
                 int status = rs.getInt(7);
                 int cateID = rs.getInt(8);
+                String location = rs.getString(9);
 
-                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID);
+                Product pro = new Product(pid, pname, quantity, price, image, description, status, cateID, location);
 
                 arr.add(pro);
             }
