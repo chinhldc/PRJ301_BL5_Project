@@ -44,7 +44,6 @@
                                     <h3>Enter your username and password</h3>
                                     <% if(message!=null) { %>
                                     <br><h5><%=message %></h5>
-                                    
                                     <%} %>
                                 </div>
                                 <form class="form" method="post" action="">

@@ -38,32 +38,32 @@
                                 <div class="title">
                                     <h4>Sign Up</h4>
                                     <h3>Please fill below fields</h3>
-                                    <h5><%=request.getAttribute("message") %></h5>
+                                    <h5>${requestScope.message}</h5>
                                 </div>
                                 <form class="form" method="post" action="">
                                     <div class="row">
                                         <div class="col-lg-6 col-12">
                                             <div class="form-group">
                                                 <label>Your Name<span>*</span></label>
-                                                <input name="name" type="text" placeholder="" value="<%=request.getAttribute("name") %>" required>
+                                                <input name="name" type="text" placeholder="" value="${requestScope.name}" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-12">
                                             <div class="form-group">
                                                 <label>Your phone<span>*</span></label>
-                                                <input name="phone" type="text" placeholder="" value="<%=request.getAttribute("phone") %>" required>
+                                                <input name="phone" type="text" placeholder="" value="${requestScope.phone}" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-12 col-12">
                                             <div class="form-group">
                                                 <label>Your Address<span>*</span></label>
-                                                <input name="address" type="text" placeholder="" value="<%=request.getAttribute("address") %>" required>
+                                                <input name="address" type="text" placeholder="" value="${requestScope.address}" required>
                                             </div>	
                                         </div>
                                         <div class="col-lg-12 col-12">
                                             <div class="form-group">
                                                 <label>Username<span>*</span></label>
-                                                <input name="username" type="text" placeholder="" value="<%=request.getAttribute("username") %>" required>
+                                                <input name="username" type="text" placeholder="" value="${requestScope.username}" required>
                                             </div>	
                                         </div>
                                         <div class="col-lg-12 col-12">
